@@ -1,0 +1,63 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- Create Ticket Form -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Create a New Ticket</h5>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="create_ticket.php" class="row g-3">
+        <div class="col-md-6">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" name="title" id="title" class="form-control" placeholder="Enter ticket title" required>
+        </div>
+        <div class="col-md-6">
+          <label for="category" class="form-label">Category</label>
+          <select name="category" id="category" class="form-select" required>
+            <option value="">Select category</option>
+            <option value="Technical Issue">Technical Issue</option>
+            <option value="Billing">Billing</option>
+            <option value="General Inquiry">General Inquiry</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label for="description" class="form-label">Description</label>
+          <textarea name="description" id="description" rows="3" class="form-control" placeholder="Describe your issue..." required></textarea>
+        </div>
+        <div class="col-12 d-flex justify-content-between">
+          <div>
+            <a href="?page=dashboard" class="btn btn-secondary">Back to Dashboard</a>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">Submit Ticket</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ticket List -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+      <h5 class="mb-0">All Tickets</h5>
+    </div>
+    <div class="card-body">
+      {% if tickets is not empty %}
+        {% for ticket in tickets %}
+          <div class="border-start border-primary ps-3 mb-3">
+            <h6 class="fw-bold mb-1">{{ ticket.title }}</h6>
+            <p class="text-muted mb-1"><strong>Category:</strong> {{ ticket.category }}</p>
+            <p>{{ ticket.description }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">No tickets yet. Create one above 👆</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12 text-center mb-4">
+      <h2 class="fw-bold">Welcome to Your Dashboard</h2>
+      <p class="text-muted">Manage your tickets and activities easily.</p>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <!-- Summary Cards -->
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0">
+        <h5>Total Tickets</h5>
+        <h3 class="fw-bold text-primary">18</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0">
+        <h5>Open Tickets</h5>
+        <h3 class="fw-bold text-warning">5</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 border-0">
+        <h5>Closed Tickets</h5>
+        <h3 class="fw-bold text-success">13</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card shadow-sm p-4 border-0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0">Recent Tickets</h5>
+          <a href="?page=tickets" class="btn btn-outline-primary btn-sm">View All</a>
+        </div>
+
+        <table class="table table-hover table-striped mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Subject</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Website Bug Fix</td>
+              <td><span class="badge bg-warning">Open</span></td>
+              <td>Oct 25, 2025</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Login Issue</td>
+              <td><span class="badge bg-success">Closed</span></td>
+              <td>Oct 22, 2025</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Payment Gateway Setup</td>
+              <td><span class="badge bg-warning">Open</span></td>
+              <td>Oct 20, 2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
