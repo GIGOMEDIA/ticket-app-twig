@@ -1,0 +1,1 @@
+web: PHP -S 0.0.0.0:$PORT -t src
