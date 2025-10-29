@@ -37,14 +37,14 @@ switch ($page) {
         ]);
         break;
 
-    case 'logout':
-        echo "
-        <script>
-          localStorage.removeItem('user');
-          localStorage.removeItem('tickets');
-          window.location.href='?page=login';
-        </script>";
-        break;
+   case 'logout':
+    echo "
+    <script>
+      localStorage.removeItem('user');
+      window.location.href='?page=login';
+    </script>";
+    exit;
+
 
     default:
         echo $twig->render('login.twig', ['title' => 'Login']);

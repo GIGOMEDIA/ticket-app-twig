@@ -94,4 +94,12 @@
       <td colspan="4" class="text-center text-muted">No recent tickets</td>
     </tr>`;
 </script>
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+
+if (!user) {
+  window.location.href = "?page=login";
+}
+</script>
+
 {% endblock %}

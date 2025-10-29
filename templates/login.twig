@@ -72,6 +72,13 @@
       }
     });
   </script>
+  <script>
+const user = JSON.parse(localStorage.getItem("user"));
+if (user && user.username) {
+  window.location.href = "?page=dashboard";
+}
+</script>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
