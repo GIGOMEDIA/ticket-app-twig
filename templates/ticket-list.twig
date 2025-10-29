@@ -9,14 +9,14 @@
       <h5 class="mb-0">Create a New Ticket</h5>
     </div>
     <div class="card-body">
-      <form method="POST" action="create_ticket.php" class="row g-3">
+      <form class="row g-3" id="ticketForm">
         <div class="col-md-6">
           <label for="title" class="form-label">Title</label>
-          <input type="text" name="title" id="title" class="form-control" placeholder="Enter ticket title" required>
+          <input type="text" id="title" class="form-control" required placeholder="Enter ticket title">
         </div>
         <div class="col-md-6">
           <label for="category" class="form-label">Category</label>
-          <select name="category" id="category" class="form-select" required>
+          <select id="category" class="form-select" required>
             <option value="">Select category</option>
             <option value="Technical Issue">Technical Issue</option>
             <option value="Billing">Billing</option>
@@ -25,15 +25,11 @@
         </div>
         <div class="col-12">
           <label for="description" class="form-label">Description</label>
-          <textarea name="description" id="description" rows="3" class="form-control" placeholder="Describe your issue..." required></textarea>
+          <textarea id="description" rows="3" class="form-control" required placeholder="Describe your issue..."></textarea>
         </div>
         <div class="col-12 d-flex justify-content-between">
-          <div>
-            <a href="?page=dashboard" class="btn btn-secondary">Back to Dashboard</a>
-          </div>
-          <div>
-            <button type="submit" class="btn btn-primary">Submit Ticket</button>
-          </div>
+          <a href="?page=dashboard" class="btn btn-secondary">Back to Dashboard</a>
+          <button type="submit" class="btn btn-primary">Submit Ticket</button>
         </div>
       </form>
     </div>
@@ -44,20 +40,52 @@
     <div class="card-header bg-secondary text-white">
       <h5 class="mb-0">All Tickets</h5>
     </div>
-    <div class="card-body">
-      {% if tickets is not empty %}
-        {% for ticket in tickets %}
-          <div class="border-start border-primary ps-3 mb-3">
-            <h6 class="fw-bold mb-1">{{ ticket.title }}</h6>
-            <p class="text-muted mb-1"><strong>Category:</strong> {{ ticket.category }}</p>
-            <p>{{ ticket.description }}</p>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-muted">No tickets yet. Create one above 👆</p>
-      {% endif %}
+    <div class="card-body" id="ticketList">
     </div>
   </div>
 
 </div>
+
+<script>
+  let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
+
+  function displayTickets() {
+    const container = document.getElementById("ticketList");
+
+    if (tickets.length === 0) {
+      container.innerHTML = '<p class="text-muted">No tickets yet. Create one above 👆</p>';
+      return;
+    }
+
+    container.innerHTML = tickets.map(ticket => `
+      <div class="border-start border-primary ps-3 mb-3">
+        <h6 class="fw-bold mb-1">${ticket.title}</h6>
+        <p class="text-muted mb-1"><strong>Category:</strong> ${ticket.category}</p>
+        <p>${ticket.description}</p>
+      </div>
+    `).join("");
+  }
+
+  displayTickets();
+
+  document.getElementById("ticketForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const newTicket = {
+      id: Date.now(),
+      title: document.getElementById("title").value,
+      category: document.getElementById("category").value,
+      description: document.getElementById("description").value,
+      status: "Open",
+      created: new Date().toLocaleDateString()
+    };
+
+    tickets.push(newTicket);
+    localStorage.setItem("tickets", JSON.stringify(tickets));
+
+    alert("✅ Ticket Created!");
+    this.reset();
+    displayTickets();
+  });
+</script>
 {% endblock %}

@@ -16,6 +16,14 @@
 
   {% include 'partials/footer.twig' %}
 
+  <script>
+    // Prevent back-after-logout
+    window.onpageshow = (e) => {
+      if (e.persisted && !localStorage.getItem('user')) {
+        window.location.href = "?page=login";
+      }
+    };
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

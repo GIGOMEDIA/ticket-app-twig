@@ -4,9 +4,9 @@
 <script>
   // Check if user exists in localStorage
   const user = JSON.parse(localStorage.getItem('user'));
+  let tickets = JSON.parse(localStorage.getItem("tickets")) || [];
 
   if (!user || !user.username) {
-    // Redirect back to login
     window.location.href = "?page=login";
   } else {
     console.log("Logged in as:", user.username);
@@ -26,19 +26,19 @@
     <div class="col-md-4">
       <div class="card shadow-sm p-3 border-0">
         <h5>Total Tickets</h5>
-        <h3 class="fw-bold text-primary">18</h3>
+        <h3 class="fw-bold text-primary"><span id="totalTickets">0</span></h3>
       </div>
     </div>
     <div class="col-md-4">
       <div class="card shadow-sm p-3 border-0">
         <h5>Open Tickets</h5>
-        <h3 class="fw-bold text-warning">5</h3>
+        <h3 class="fw-bold text-warning"><span id="openTickets">0</span></h3>
       </div>
     </div>
     <div class="col-md-4">
       <div class="card shadow-sm p-3 border-0">
         <h5>Closed Tickets</h5>
-        <h3 class="fw-bold text-success">13</h3>
+        <h3 class="fw-bold text-success"><span id="closedTickets">0</span></h3>
       </div>
     </div>
   </div>
@@ -60,25 +60,7 @@
               <th>Created</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Website Bug Fix</td>
-              <td><span class="badge bg-warning">Open</span></td>
-              <td>Oct 25, 2025</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Login Issue</td>
-              <td><span class="badge bg-success">Closed</span></td>
-              <td>Oct 22, 2025</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Payment Gateway Setup</td>
-              <td><span class="badge bg-warning">Open</span></td>
-              <td>Oct 20, 2025</td>
-            </tr>
+          <tbody id="recentTicketsBody">
           </tbody>
         </table>
       </div>
@@ -87,9 +69,29 @@
 </div>
 
 <script>
-  // Display username on dashboard
+  // Display username
   if (user) {
     document.getElementById("displayUser").innerText = user.username;
   }
+
+  // Ticket counts
+  document.getElementById("totalTickets").innerText = tickets.length;
+  document.getElementById("openTickets").innerText = tickets.filter(t => t.status === "Open").length;
+  document.getElementById("closedTickets").innerText = tickets.filter(t => t.status === "Closed").length;
+
+  // Recent 3 tickets
+  const recentTicketHTML = tickets.slice(-3).reverse().map((ticket, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${ticket.title}</td>
+      <td><span class="badge ${ticket.status === "Open" ? "bg-warning" : "bg-success"}">${ticket.status}</span></td>
+      <td>${ticket.created}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("recentTicketsBody").innerHTML = recentTicketHTML || `
+    <tr>
+      <td colspan="4" class="text-center text-muted">No recent tickets</td>
+    </tr>`;
 </script>
 {% endblock %}
