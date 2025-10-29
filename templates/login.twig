@@ -28,11 +28,7 @@
   <div class="card p-4 bg-white">
     <h2 class="text-center mb-3">Login</h2>
 
-    {% if session.error %}
-      <div class="alert alert-danger text-center">{{ session.error }}</div>
-    {% endif %}
-
-    <form method="POST" action="login.php">
+    <form id="loginForm">
       <div class="mb-3">
         <label class="form-label">Username</label>
         <input type="text" name="username" class="form-control" placeholder="Enter your username" required>
@@ -50,6 +46,32 @@
       </p>
     </form>
   </div>
+
+  <script>
+    // Already logged in → dashboard
+    if (localStorage.getItem('loggedIn') === 'true') {
+      window.location.href = '?page=dashboard';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const stored = JSON.parse(localStorage.getItem('user'));
+
+      if (!stored) {
+        alert("No registered user found! Please register first.");
+        window.location.href = '?page=register';
+        return;
+      }
+
+      if (stored.username === this.username.value.trim() &&
+          stored.password === this.password.value.trim()) {
+        localStorage.setItem('loggedIn', 'true');
+        window.location.href = '?page=dashboard';
+      } else {
+        alert("Incorrect username or password!");
+      }
+    });
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
