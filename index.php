@@ -8,13 +8,17 @@ $twig = new \Twig\Environment($loader, [
     'cache' => false,
 ]);
 
-// Simple routing
-$page = $_GET['page'] ?? 'login';
-
 // Initialize users array if not set
 if (!isset($_SESSION['users'])) {
     $_SESSION['users'] = [];
 }
+
+// Decode tickets from localStorage fallback (JS will supply later)
+$ticketsJSON = $_GET['tickets'] ?? '[]';
+$tickets = json_decode($ticketsJSON, true);
+
+// Get page
+$page = $_GET['page'] ?? 'login';
 
 // -------- Registration Handling --------
 if ($page === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +27,7 @@ if ($page === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Check for existing username/email
+    // Check duplicate username/email
     foreach ($_SESSION['users'] as $user) {
         if ($user['username'] === $username || $user['email'] === $email) {
             echo $twig->render('register.twig', [
@@ -35,7 +39,7 @@ if ($page === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Store user with hashed password
+    // Save user
     $_SESSION['users'][] = [
         'fullname' => $fullname,
         'username' => $username,
@@ -43,7 +47,6 @@ if ($page === 'register' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'password' => password_hash($password, PASSWORD_DEFAULT)
     ];
 
-    // Redirect to login with success message
     $_SESSION['success'] = 'Registration successful! You can login now.';
     header("Location: ?page=login");
     exit;
@@ -74,22 +77,14 @@ if ($page === 'login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// -------- Dashboard auth check --------
-if ($page === 'dashboard') {
-    if (!isset($_SESSION['user'])) {
-        header("Location: ?page=login");
-        exit();
-    }
-}
-
-// -------- Logout Handling --------
+// -------- Logout --------
 if ($page === 'logout') {
     session_destroy();
     header("Location: ?page=login");
     exit();
 }
 
-// -------- Render templates --------
+// -------- Render templates with session protection --------
 switch ($page) {
     case 'login':
         echo $twig->render('login.twig', [
@@ -100,13 +95,32 @@ switch ($page) {
         break;
 
     case 'register':
-        echo $twig->render('register.twig', ['title' => 'Register']);
+        echo $twig->render('register.twig', [
+            'title' => 'Register'
+        ]);
         break;
 
     case 'dashboard':
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
         echo $twig->render('dashboard.twig', [
             'title' => 'Dashboard',
-            'user' => $_SESSION['user']
+            'user' => $_SESSION['user'],
+            'tickets' => $tickets
+        ]);
+        break;
+
+    case 'tickets':
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
+        echo $twig->render('ticket-list.twig', [
+            'title' => 'Tickets',
+            'user' => $_SESSION['user'],
+            'tickets' => $tickets
         ]);
         break;
 
